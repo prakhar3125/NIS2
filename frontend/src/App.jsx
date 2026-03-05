@@ -1541,11 +1541,11 @@ const POLICIES = [
 ];
 
 const INCIDENTS = [
-  { id:"INC-2024-001", detected:"15 Jan 2024", resolved:"16 Jan 2024", title:"DDoS Attack on Market Data Gateway",           severity:"HIGH",     type:"DDoS / Availability",       assets:"AST-003",           significant:true, ew24:"Y", ntf72:"Y", report30:"Y", dora4h:"N", rootCause:"Hacktivist DDoS – Cloudflare scrubbing activated. 2.3h outage.",        lessons:"Upgraded to Cloudflare DDoS+ tier. Failover tested quarterly." },
-  { id:"INC-2024-002", detected:"03 Mar 2024", resolved:"04 Mar 2024", title:"Phishing Campaign – BEC Attempt",              severity:"MEDIUM",   type:"Phishing / BEC",            assets:"All (email gw)",    significant:false,ew24:"N", ntf72:"N", report30:"N", dora4h:"N", rootCause:"Criminal BEC attempt targeting CFO. MFA prevented account compromise.", lessons:"Extended MFA to all SaaS platforms (ACT-010). Phishing simulation quarterly." },
-  { id:"INC-2024-003", detected:"22 Jul 2024", resolved:"25 Jul 2024", title:"Ransomware – Isolated Dev Server",             severity:"CRITICAL", type:"Ransomware",                assets:"AST-002 (dev only)",significant:true, ew24:"Y", ntf72:"Y", report30:"Y", dora4h:"N", rootCause:"LockBit-affiliated actor. Dev environment only. Immutable backup restored in 4h.", lessons:"TLPT commissioned (ACT-007). ZTNA deployment accelerated." },
-  { id:"INC-2024-004", detected:"11 Oct 2024", resolved:"11 Oct 2024", title:"Privileged Account Anomaly – False Positive",  severity:"LOW",      type:"Insider Threat (Suspected)",assets:"AST-005 (SIEM)",   significant:false,ew24:"N", ntf72:"N", report30:"N", dora4h:"N", rootCause:"SIEM alert – CyberArk flagged unusual PAM session. Confirmed authorised.", lessons:"PAM alerting rules tuned. No reporting required." },
-  { id:"INC-2025-001", detected:"14 Feb 2025", resolved:"17 Feb 2025", title:"Supply Chain Compromise Attempt – Vendor Portal",severity:"HIGH",   type:"Supply Chain",              assets:"AST-001 via VND-003",significant:true, ew24:"Y", ntf72:"Y", report30:"Y", dora4h:"N", rootCause:"Nation-state-linked attempt via compromised vendor update. Blocked at CVCN checkpoint.", lessons:"DORA Art.30 clauses applied to all critical ICT vendors (ACT-013)." },
+  { id:"INC-2024-001", detected:"15 Jan 2024", resolved:"16 Jan 2024", title:"DDoS Attack on Market Data Gateway",             severity:"HIGH",     type:"DDoS / Availability",        assets:"AST-003",              significant:true,  ew24:"Y", ew24_ts:"15 Jan 2024 22:14", ntf72:"Y", ntf72_ts:"17 Jan 2024 11:00", report30:"Y", report30_date:"14 Feb 2024", dora4h:"N", rootCause:"Hacktivist DDoS – Cloudflare scrubbing activated. 2.3h outage.",                                             lessons:"Upgraded to Cloudflare DDoS+ tier. Failover tested quarterly." },
+  { id:"INC-2024-002", detected:"03 Mar 2024", resolved:"04 Mar 2024", title:"Phishing Campaign – BEC Attempt",                severity:"MEDIUM",   type:"Phishing / BEC",             assets:"All (email gateway)",  significant:false, ew24:"N", ew24_ts:"—",                 ntf72:"N", ntf72_ts:"—",                 report30:"N", report30_date:"—",           dora4h:"N", rootCause:"Criminal BEC attempt targeting CFO. MFA prevented account compromise.",                                           lessons:"Extended MFA to all SaaS platforms (ACT-010). Phishing simulation quarterly." },
+  { id:"INC-2024-003", detected:"22 Jul 2024", resolved:"25 Jul 2024", title:"Ransomware – Isolated Dev Server",               severity:"CRITICAL", type:"Ransomware",                 assets:"AST-002 (dev env only)",significant:true,  ew24:"Y", ew24_ts:"22 Jul 2024 18:45", ntf72:"Y", ntf72_ts:"24 Jul 2024 09:00", report30:"Y", report30_date:"20 Aug 2024", dora4h:"N", rootCause:"LockBit-affiliated actor. Dev environment only. Immutable backup restored in 4h.",                                  lessons:"TLPT commissioned (ACT-007). ZTNA deployment accelerated." },
+  { id:"INC-2024-004", detected:"11 Oct 2024", resolved:"11 Oct 2024", title:"Privileged Account Anomaly – False Positive",    severity:"LOW",      type:"Insider Threat (Suspected)", assets:"AST-005 (SIEM)",        significant:false, ew24:"N", ew24_ts:"—",                 ntf72:"N", ntf72_ts:"—",                 report30:"N", report30_date:"—",           dora4h:"N", rootCause:"SIEM alert – CyberArk flagged unusual PAM session. Investigation confirmed authorised activity.",                lessons:"PAM alerting rules tuned. No reporting required." },
+  { id:"INC-2025-001", detected:"14 Feb 2025", resolved:"17 Feb 2025", title:"Supply Chain Compromise Attempt – Vendor Portal", severity:"HIGH",     type:"Supply Chain",               assets:"AST-001 (via VND-003)", significant:true,  ew24:"Y", ew24_ts:"14 Feb 2025 09:30", ntf72:"Y", ntf72_ts:"16 Feb 2025 14:00", report30:"Y", report30_date:"17 Mar 2025", dora4h:"N", rootCause:"Nation-state-linked attempt via compromised vendor update channel. Blocked at CVCN checkpoint.",                  lessons:"DORA Art.30 clauses applied to all critical ICT vendors (ACT-013)." },
 ];
 
 const SIGNIFICANCE = [
@@ -2022,17 +2022,34 @@ const IncidentView = () => {
   const phaseColors = { "PHASE 1: EARLY WARNING": T.criminal, "PHASE 2: INCIDENT NOTIFICATION": T.high, "PHASE 3: FINAL REPORT": T.accent };
 
   const incColumns = [
-    { key:"id",       label:"ID",          width:120, render:v => <span style={{ color:T.accent, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
-    { key:"detected", label:"Detected",    width:110 },
-    { key:"title",    label:"Incident",    width:260, wrap:true },
-    { key:"severity", label:"Severity",    width:90,  render:v => <LevelBadge level={v} /> },
-    { key:"type",     label:"Type",        width:150, render:v => <Badge label={v} color={T.medium} T={T} /> },
-    { key:"significant",label:"Significant",width:90, render:v => v ? <Badge label="YES" color={T.criminal} T={T} /> : <Badge label="no" color={T.muted} T={T} /> },
-    { key:"ew24",     label:"24h EW",      width:70,  render:v => <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
-    { key:"ntf72",    label:"72h NTF",     width:70,  render:v => <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
-    { key:"report30", label:"30d Report",  width:80,  render:v => <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
-    { key:"dora4h",   label:"DORA 4h",     width:75,  render:v => <span style={{ color: v==="Y" ? T.low : T.criminal, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
-    { key:"lessons",  label:"Lessons Learned", width:280, wrap:true, render:v => <span style={{ color:T.muted, fontSize:10, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
+    { key:"id",          label:"ID",             width:120, render:v => <span style={{ color:T.accent, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
+    { key:"detected",    label:"Detected",       width:110 },
+    { key:"resolved",    label:"Resolved",       width:110 },
+    { key:"title",       label:"Incident",       width:220, wrap:true },
+    { key:"severity",    label:"Severity",       width:90,  render:v => <LevelBadge level={v} /> },
+    { key:"type",        label:"Type",           width:160, render:v => <Badge label={v} color={T.medium} T={T} /> },
+    { key:"significant", label:"Significant",    width:90,  render:v => v ? <Badge label="YES" color={T.criminal} T={T} /> : <Badge label="no" color={T.muted} T={T} /> },
+    { key:"ew24",        label:"24h EW",         width:130, render:(v,row) => (
+        <div>
+          <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span>
+          {row.ew24_ts !== "—" && <div style={{ fontSize:9, color:T.dimmed, fontFamily:"'IBM Plex Mono',monospace", marginTop:2 }}>{row.ew24_ts}</div>}
+        </div>
+      )},
+    { key:"ntf72",       label:"72h NTF",        width:140, render:(v,row) => (
+        <div>
+          <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span>
+          {row.ntf72_ts !== "—" && <div style={{ fontSize:9, color:T.dimmed, fontFamily:"'IBM Plex Mono',monospace", marginTop:2 }}>{row.ntf72_ts}</div>}
+        </div>
+      )},
+    { key:"report30",    label:"30d Report",     width:120, render:(v,row) => (
+        <div>
+          <span style={{ color: v==="Y" ? T.low : T.muted, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span>
+          {row.report30_date !== "—" && <div style={{ fontSize:9, color:T.dimmed, fontFamily:"'IBM Plex Mono',monospace", marginTop:2 }}>{row.report30_date}</div>}
+        </div>
+      )},
+    { key:"dora4h",      label:"DORA 4h",        width:75,  render:v => <span style={{ color: v==="Y" ? T.low : T.criminal, fontWeight:700, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
+    { key:"rootCause",   label:"Root Cause",     width:240, wrap:true, render:v => <span style={{ color:T.muted, fontSize:10, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
+    { key:"lessons",     label:"Lessons Learned",width:240, wrap:true, render:v => <span style={{ color:T.muted, fontSize:10, fontFamily:"'IBM Plex Mono',monospace" }}>{v}</span> },
   ];
 
   const sigColumns = [
